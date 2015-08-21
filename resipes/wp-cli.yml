@@ -1,0 +1,15 @@
+---
+- hosts      : all
+  sudo       : yes
+
+  tasks      :
+
+    - name   : Download wp-cli
+      get_url:
+        url  : https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        dest : /usr/bin/wp
+
+    - name   : Make wp-cli executable
+      file:
+        path: /usr/bin/wp
+        mode: "u+rwx,g+rx,o+rx"
