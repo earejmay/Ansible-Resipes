@@ -1,0 +1,14 @@
+---
+- hosts      : all
+  sudo       : yes
+
+  tasks      :
+  
+    #
+    # ### Install Unzip
+    #
+    - name: Install unzip
+      apt:
+        pkg         : unzip
+        state       : latest
+        update_cache: yes
