@@ -1,0 +1,136 @@
+---
+- hosts      : all
+  sudo       : yes
+
+  tasks      :
+  
+# ··············································································
+    # ### Install zsh
+# ··············································································
+
+    - name      : remove folders
+      file      :
+        state   : absent
+        path    : "{{ item }}"
+      with_items:
+        - "~/.zshrc"
+        - "~/.oh-my-zsh"
+        - "~/.antigen"
+        - "~/antigen.zshrc"
+        - "~/.zshrc"
+
+# ··· Install ZSH
+    - name      : Install ZSH
+      apt       :
+        pkg     : zsh
+        state   : latest
+
+    - name      : Set zsh as default shell
+      user      :
+        name    : root
+        shell   : /bin/zsh
+
+
+# ··· Install Oh-My-ZSH
+    - name      : Install Oh-My-ZSH
+      git       :
+        repo    : https://github.com/robbyrussell/oh-my-zsh.git
+        dest    : "~/.oh-my-zsh"
+
+    - name      : Install Oh-My-ZSH - Change permissions
+      file      :
+        path    : "~/.oh-my-zsh"
+        owner   : root
+        group   : root
+        state   : directory
+        recurse : yes
+
+
+# ··· Create file .zshrc
+    - name      : Create file .zshrc
+      get_url   :
+        url     : "https://raw.githubusercontent.com/Mayccoll/Linux/master/files/zshrc"
+        dest    : "~/.zshrc"
+
+    - name      : Change .zshrc owner and group
+      file      :
+        path    : "~/.zshrc"
+        owner   : root
+        group   : root
+        mode    : 0644
+
+# ··· Install Antigen
+    - name      : Install Antigen
+      git       :
+        repo    : https://github.com/zsh-users/antigen.git
+        dest    : "~/.antigen"
+
+    - name      : Install Antigen - Change permissions
+      file      :
+        path    : "~/.antigen"
+        owner   : root
+        group   : root
+        state   : directory
+        recurse : yes
+
+
+# ··· Install Oh-My-ZSH Plugin
+    - name      : Install Syntax Higbhtlighting
+      git       :
+        repo    : https://github.com/zsh-users/zsh-syntax-highlighting.git
+        dest    : "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+
+    - name      : Install Syntax Higbhtlighting - Change permissions
+      file      :
+        path    : "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+        owner   : root
+        group   : root
+        state   : directory
+        recurse : yes
+
+
+# ··· Add antigen to .zshrc
+    - name      : Get Antigen config file
+      get_url   :
+        url     : "https://raw.githubusercontent.com/Mayccoll/Linux/master/files/antigen.zshrc"
+        dest    : "~/antigen.zshrc"
+
+    - name      : Add antigen config file to .zshrc
+      shell     : "cat ~/antigen.zshrc >> ~/.zshrc"
+
+    - name      : Remove antigen.zshrc
+      file      :
+        state   : absent
+        path    : "~/antigen.zshrc"
+
+
+# ··· Install Terminal Fonts
+    - name      : Install Terminal Fonts
+      git       :
+        repo    : http://github.com/gabrielelana/awesome-terminal-fonts.git
+        dest    : "~/awesome-terminal-fonts"
+        version : patching-strategy
+
+    - name      : Install Terminal Fonts - Change permissions
+      file      :
+        path    : "~/awesome-terminal-fonts"
+        owner   : root
+        group   : root
+        state   : directory
+        recurse : yes
+
+    - name      : Install Terminal Fonts - Copy Fonts
+      shell     : "cp ~/awesome-terminal-fonts/patched/*.ttf /usr/local/share/fonts"
+
+    - name      : Install Terminal Fonts - Install fontconfig
+      apt       :
+        pkg     : fontconfig
+        state   : latest
+
+    - name      : Install Terminal Fonts - Update cache
+      shell     : fc-cache -fv
+
+    - name      : Install Terminal Fonts - Remove Folder
+      file      :
+        state   : absent
+        path    : "~/awesome-terminal-fonts"
