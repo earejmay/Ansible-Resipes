@@ -11,3 +11,12 @@ WP-CLI is a set of command-line tools for managing WordPress installations.
   ansible-playbook -i "localhost," -c local ans && \
   rm ans
 ```
+
+#### Locale Fix
+
+```bash
+  $
+  wget -O ans http://git.io/vGK27 && \
+  ansible-playbook -i "localhost," -c local ans && \
+  rm ans
+```
