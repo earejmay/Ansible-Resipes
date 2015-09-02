@@ -7,7 +7,7 @@
 # ··············································································
     # ###  Ensure a locale exists.
 # ··············································································
-  - name      : Fix locale es_CO.UTF-8
+    - name      : Fix locale es_CO.UTF-8
       locale_gen:
         name    : es_CO.UTF-8
         state   : present
