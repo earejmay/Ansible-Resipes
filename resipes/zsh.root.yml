@@ -19,6 +19,12 @@
         - "~/antigen.zshrc"
         - "~/.zshrc"
 
+# ··· Install Git
+    - name      : Install Git
+      apt       :
+        pkg     : git
+        state   : latest
+        
 # ··· Install ZSH
     - name      : Install ZSH
       apt       :
