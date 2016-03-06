@@ -1,0 +1,33 @@
+---
+- name  : Backups Folder
+  hosts : all
+  become: true
+  vars:
+    folders :
+      - /home/master
+    remote_dir_bk_store: /home/backup
+    local_dir_bk_store : ./backup
+
+  tasks:
+
+    - name: Get username
+      command: whoami
+      register: var_whoami
+
+    - debug: var=var_whoami.stdout
+
+    - name    : Create Backups folder
+      file    :
+        path  : '{{ remote_dir_bk_store }}'
+        state : directory
+        owner : var_whoami.stdout
+      tags    :
+        - folders
+        - databases
+    #
+    #
+    # - name : Compress sites folders
+    #   command   : 'tar -zcvf {{ remote_dir_bk_store }}/{{ item }}.tar {{ item }}'
+    #   with_items: folders
+    #   tags      :
+    #     - folders

@@ -26,7 +26,7 @@
       group       : name=masters system=yes state=present
 
     - name        : make sure we can sudo as master group
-      lineinfile  : dest=/etc/sudoers.tmp state=present regexp='^%master' line='%master ALL=(ALL) ALL'
+      lineinfile  : dest=/etc/sudoers.tmp state=present regexp='^%master' line='%master ALL=(ALL) NOPASSWD:ALL'
 
     - name        : also make sure ssh-agent works via sudo
       lineinfile  : dest=/etc/sudoers.tmp state=present regexp='^Defaults env_keep\+\=SSH_AUTH_SOCK' line='Defaults env_keep+=SSH_AUTH_SOCK'
@@ -42,3 +42,15 @@
           owner      : master
           group      : masters
           mode       : 0600
+
+    - name: Disallow password authentication
+      lineinfile: dest=/etc/ssh/sshd_config
+                  regexp="^PasswordAuthentication"
+                  line="PasswordAuthentication no"
+                  state=present
+      notify: Restart ssh
+
+  handlers:
+    
+    - name: Restart ssh
+      service: name=ssh state=restarted
