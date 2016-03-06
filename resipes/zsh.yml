@@ -1,11 +1,11 @@
 ---
 - hosts      : all
-  sudo       : yes
+  become     : yes
   vars                :
-    home              : /home/vagrant
+    home              : ~
     owner             : vagrant
     group             : vagrant
-    
+
   tasks      :
 
 
