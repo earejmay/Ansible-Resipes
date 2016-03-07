@@ -1,11 +1,10 @@
 ---
 - name  : Backups Folder
   hosts : all
-  become: true
+  become: false
   vars:
     folders :
-      - /home/master
-    remote_dir_bk_store: /home/backup
+      - oooo
     local_dir_bk_store : ./backup
 
   tasks:
@@ -18,16 +17,13 @@
 
     - name    : Create Backups folder
       file    :
-        path  : '{{ remote_dir_bk_store }}'
+        path  : "/home/{{ var_whoami.stdout }}/backup"
         state : directory
-        owner : var_whoami.stdout
       tags    :
         - folders
-        - databases
-    #
-    #
-    # - name : Compress sites folders
-    #   command   : 'tar -zcvf {{ remote_dir_bk_store }}/{{ item }}.tar {{ item }}'
-    #   with_items: folders
-    #   tags      :
-    #     - folders
+
+    - name : Compress sites folders
+      command   : "tar -zcvf /home/{{ var_whoami.stdout }}/backup/{{ item }}.tar.gz /home/{{ var_whoami.stdout }}/{{ item }}"
+      with_items: folders
+      tags      :
+        - folders
