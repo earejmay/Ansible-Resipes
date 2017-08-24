@@ -1,7 +1,44 @@
-# Ansible Playbook
+Ansible
+=======
 
-Run
+## Install
 
+```bash
+sudo apt-add-repository -y ppa:ansible/ansible && \
+sudo apt-get update && \
+sudo apt-get install -y ansible
+```
+--------------------------------------------------------------------------------
+
+
+### CI
+```bash
+$
+ansible-playbook bootstrap.yml
+```
+--------------------------------------------------------------------------------
+
+### Run Local
+
+```bash
+touch playbook.yml && \
+vim playbook.yml
+```
+
+```yml
+---
+- hosts: all
+  tasks:
+    - shell: echo "hello world"
+```
+
+```bash
+$ ansible-playbook -i "localhost," -c local playbook.yml
+```
+
+--------------------------------------------------------------------------------
+
+### Host file
 
 ```bash
 # ansible-playbook -i {FILE} -l {ALIAS} playbook.yml
@@ -9,15 +46,21 @@ Run
 $ ansible-playbook -i hosts -l digital-ocean playbook.yml
 ```
 
-### Host file
-
 The host file works with ```./ssh/config``` file
 
------
+--------------------------------------------------------------------------------
+
+## Disable Cow
+
+In ```~/.bashrc``` add this line:
+
+```bash
+export ANSIBLE_NOCOWS=1
+```
+
+--------------------------------------------------------------------------------
 
 # Ansible Resipes
-## Run in localhost
-
 
 #### Wordpress cli
 
@@ -39,6 +82,22 @@ The host file works with ```./ssh/config``` file
   rm ans
 ```
 
+```yml
+---
+- hosts      : all
+  become     : yes
+  tasks      :
+
+    - name      : Fix locale es_CO.UTF-8
+      locale_gen:
+        name    : es_CO.UTF-8
+        state   : present
+
+    - name      : Fix locale en_US.UTF-8
+      locale_gen:
+        name    : en_US.UTF-8
+        state   : present
+```
 #### ZSH for ROOT
 
 ```bash
@@ -55,6 +114,11 @@ The host file works with ```./ssh/config``` file
 #### Install apt-get
 
 ```yml
+---
+- hosts      : 127.0.0.1
+  become     : yes
+  tasks      :
+
     - name      : Install Git
       apt       :
         pkg     : git
@@ -64,6 +128,11 @@ The host file works with ```./ssh/config``` file
 #### Create File
 
 ```yml
+---
+- hosts      : 127.0.0.1
+  become     : yes
+  tasks      :
+
     - name      : Create File
       file      :
         path    : "~/thisfile.txt"
@@ -74,6 +143,11 @@ The host file works with ```./ssh/config``` file
 #### Create Folder
 
 ```yml
+---
+- hosts      : 127.0.0.1
+  become     : yes
+  tasks      :
+
     - name      : Create Folder
       file      :
         path    : "~/Documents/custom/folder"
@@ -81,9 +155,14 @@ The host file works with ```./ssh/config``` file
         recurse : yes
 ```
 
-#### Remove Folders
+#### Remove Folders and Files
 
 ```yml
+---
+- hosts      : 127.0.0.1
+  become     : yes
+  tasks      :
+
     - name      : Remove Remove
       file      :
         state   : absent
@@ -99,6 +178,11 @@ The host file works with ```./ssh/config``` file
 #### Make File Executable
 
 ```yml
+---
+- hosts      : 127.0.0.1
+  become     : yes
+  tasks      :
+
     - name   : Make File Executable
       file:
         path: /usr/bin/file
@@ -109,6 +193,10 @@ The host file works with ```./ssh/config``` file
 
 ```yml
 ---
+- hosts      : 127.0.0.1
+  become     : yes
+  tasks      :
+
     - name   : Apt Get Update
       apt:
         update_cache: yes
@@ -117,6 +205,11 @@ The host file works with ```./ssh/config``` file
 #### Download
 
 ```yml
+---
+- hosts      : 127.0.0.1
+  become     : yes
+  tasks      :
+
     - name   : Download
       get_url:
         url  : https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
@@ -126,6 +219,11 @@ The host file works with ```./ssh/config``` file
 #### Git Clone
 
 ```yml
+---
+- hosts      : 127.0.0.1
+  become     : yes
+  tasks      :
+
     - name      : Clone Oh-My-ZSH
       git       :
         repo    : https://github.com/robbyrussell/oh-my-zsh.git
@@ -135,11 +233,14 @@ The host file works with ```./ssh/config``` file
 #### Get output in variable
 
 ```yaml
+---
+- hosts      : 127.0.0.1
+  become     : yes
+  tasks      :
+
     - name: Get username
       local_action: command whoami
       register: var_whoami
 
     - debug: var=var_whoami
 ```
-
-#### Backup Folder
